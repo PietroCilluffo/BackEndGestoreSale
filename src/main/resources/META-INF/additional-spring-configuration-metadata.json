@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "stanza1.arduino",
+      "type": "java.lang.String",
+      "description": "Description for stanza1.arduino."
+    },
+    {
+      "name": "stanza1.nome",
+      "type": "java.lang.String",
+      "description": "Description for stanza1.nome."
+    },
+    {
+      "name": "stanza1.capienzaMax",
+      "type": "java.lang.String",
+      "description": "Description for stanza1.capienzaMax."
+    },
+    {
+      "name": "stanza1.cont",
+      "type": "java.lang.String",
+      "description": "Description for stanza1.cont."
+    },
+    {
+      "name": "stanza2.arduino",
+      "type": "java.lang.String",
+      "description": "Description for stanza2.arduino."
+    },
+    {
+      "name": "stanza2.nome",
+      "type": "java.lang.String",
+      "description": "Description for stanza2.nome."
+    },
+    {
+      "name": "stanza2.capienzaMax",
+      "type": "java.lang.String",
+      "description": "Description for stanza2.capienzaMax."
+    },
+    {
+      "name": "stanza2.cont",
+      "type": "java.lang.String",
+      "description": "Description for stanza2.cont."
+    }
+  ] }

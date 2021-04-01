@@ -19,7 +19,7 @@ public class Stanza implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "nome", unique = true)
+    @Column(name = "nome")
     private String nome;
 
     @Column(name = "capMax")
@@ -33,16 +33,16 @@ public class Stanza implements Serializable {
 
     @Column(name = "arduinoId")
     private String arduinoId;
+    public Stanza(){
 
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "stanza", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<Prenotazione> prenotazioneList;
 
-    public Stanza(){
 
-    }
-    public List<Prenotazione> getPrenotazioneList() {
+   public List<Prenotazione> getPrenotazioneList() {
         return prenotazioneList;
     }
 

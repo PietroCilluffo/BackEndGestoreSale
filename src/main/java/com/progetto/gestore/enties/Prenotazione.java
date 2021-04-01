@@ -19,6 +19,11 @@ public class Prenotazione implements Serializable {
     @Column (name = "anagrafica")
     private String anagrafica;
 
+
+
+    @Column (name = "email")
+    private String email;
+
     @Column (name = "descrizione")
     private String descrizione;
 
@@ -37,12 +42,29 @@ public class Prenotazione implements Serializable {
     @Column(name = "deleteToken")
     private String deleteToken;
 
+    public String getCellulare() {
+        return cellulare;
+    }
+
+    public void setCellulare(String cellulare) {
+        this.cellulare = cellulare;
+    }
+
+    @Column(name = "cellulare")
+    private String cellulare;
+
     @ManyToOne
     @JoinColumn(name = "idStanza", referencedColumnName = "id")
     @JsonBackReference
     public Stanza stanza;
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public long getId() {
         return id;
     }
