@@ -14,9 +14,9 @@ public interface StanzaRepository extends JpaRepository<Stanza,Long> {
 
     @Modifying
     @Query("update Stanza stanza set stanza.temperatura = ?1 where stanza.nome = ?2")
-    int setTemperaturaForNomeStanza(int temp, String nome);
+    void setTemperaturaForNomeStanza(int temp, String nome);
 
     @Modifying
     @Query("update Stanza stanza set stanza.contPersone = ?1 where stanza.nome = ?2")
-    int setTContForNomeStanza(int contPersone,String nome);
+    void setTContForNomeStanza(int contPersone,String nome);
 }
