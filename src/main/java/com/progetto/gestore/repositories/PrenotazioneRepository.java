@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,8 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione,Integ
     @Query("SELECT p FROM Prenotazione p WHERE p.deleteToken =?1")
     public Prenotazione getByToken(String token);
 
+
+    @Modifying
     @Query("DELETE FROM Prenotazione p WHERE p.deleteToken =?1")
     public void delByToken(String token);
 

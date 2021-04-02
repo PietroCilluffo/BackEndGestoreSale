@@ -37,12 +37,12 @@ public class Stanza implements Serializable {
 
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stanza", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "stanza")
     @JsonManagedReference
     private List<Prenotazione> prenotazioneList;
 
 
-   public List<Prenotazione> getPrenotazioneList() {
+    public List<Prenotazione> getPrenotazioneList() {
         return prenotazioneList;
     }
 

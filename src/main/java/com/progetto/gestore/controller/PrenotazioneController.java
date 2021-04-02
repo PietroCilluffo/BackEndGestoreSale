@@ -25,7 +25,7 @@ public class PrenotazioneController {
     @Autowired
     private PrenotazioneService prenotazioneService;
 
-    @RequestMapping(value="/deleteByToken", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value="/deleteByToken/{token}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<?> deleteByToken(@PathVariable("token") String token)
     {
         if(prenotazioneService.getByToken(token)!= null){
@@ -33,18 +33,17 @@ public class PrenotazioneController {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode responseNode = mapper.createObjectNode();
             responseNode.put("code", HttpStatus.OK.toString());
-            responseNode.put("message", "Eliminazione prenotazione " +  " Eseguita Con Successo");
+            responseNode.put("message", "Eliminazione prenotazione " + " Eseguita Con Successo");
             return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.OK);
         }
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode responseNode = mapper.createObjectNode();
         responseNode.put("code", HttpStatus.OK.toString());
-        responseNode.put("message", "Eliminazione prenotazione " +  "  non Eseguita Con Successo");
-        return  new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        responseNode.put("message", "Eliminazione prenotazione " + " non Eseguita Con Successo");
+        return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.BAD_REQUEST);
 
     }
-    @PostMapping(value = "/add", produces = "application/json")
-    @ResponseBody
+    @RequestMapping(value="/add", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<?> addPrenotazione(@RequestBody PrenotazioneDto dto){
 
 
@@ -66,14 +65,14 @@ public class PrenotazioneController {
 
     @GetMapping(value = "/findPrenotazioniSettimanaByStanza", produces = "application/json")
     public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniSettimanaByStanza(@PathVariable("nome")String nome){
-        logger.info("****** Find " + " *******");
+        logger.info("***** Find " + " ******");
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniBySettimanaStanza(nome);
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
     }
 
     @GetMapping(value = "/findPrenotazioniGiornoByStanza", produces = "application/json")
     public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniGiornoByStanza(@PathVariable("nome")String nome){
-        logger.info("****** Find " + " *******");
+        logger.info("***** Find " + " ******");
         Date now = new Date();
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniByGiornoStanza(nome,now);
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
@@ -82,18 +81,18 @@ public class PrenotazioneController {
     //arduino
     @GetMapping(value = "/findPrenotazioneAttuale", produces = "application/json")
     public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneAttualeByStanza(@PathVariable("nome")String nome){
-        logger.info("****** Find " + " *******");
+        logger.info("***** Find " + " ******");
 
 
         Date dt = new Date();
 
-         InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt,dt, nome);
+        InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt,dt, nome);
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/findPrenotazioneSuccessiva", produces = "application/json")
     public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneSuccessivaByStanza(@PathVariable("nome")String nome){
-        logger.info("****** Find " + " *******");
+        logger.info("***** Find " + " ******");
         Date dt = new Date();
         InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneSuccessiva(dt,dt, nome);
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);

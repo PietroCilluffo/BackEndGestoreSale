@@ -50,9 +50,10 @@ public class StanzaController {
     @GetMapping("/stanze")
     public ResponseEntity<List<StanzaDto>> getListaStanze() throws Exception
     {
-        List<StanzaDto> stanze = new ArrayList();
+        List<StanzaDto> stanze = new ArrayList<StanzaDto>();
         try
         {
+            logger.info("jfsakkdsakdsa");
             stanze = stanzaService.getAllStanze();
         }
         catch(Exception e)
