@@ -6,10 +6,14 @@ import com.progetto.gestore.repositories.StanzaRepository;
 import com.progetto.gestore.services.StanzaService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
+@Transactional
 public class StanzaServiceImpl implements StanzaService {
    @Autowired
    private StanzaRepository stanzaRepository;
@@ -31,12 +35,17 @@ public class StanzaServiceImpl implements StanzaService {
     }
 
     @Override
-    public void setTemperaturaPerStanza(int temp, String nome) {
+    public void setTemperaturaPerStanza(double temp, String nome) {
         stanzaRepository.setTemperaturaForNomeStanza(temp,nome);
     }
 
     @Override
     public void setContPerStanza(int p,String nome) {
-        stanzaRepository.setTContForNomeStanza(p,nome);
+        int count = stanzaRepository.getCountByNome(nome) + p;
+        stanzaRepository.setTContForNomeStanza(count,nome);
+    }
+    @Override
+    public String getNomeStanzaByArduinoId(String arduinoId){
+        return stanzaRepository.getStanzaNomeByArduinoId(arduinoId);
     }
 }

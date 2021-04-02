@@ -11,7 +11,9 @@ public interface StanzaService {
 
     void aggiungiStanza( Stanza s);
 
-    void setTemperaturaPerStanza(int temp,String nome);
+    void setTemperaturaPerStanza(double temp,String nome);
 
     void setContPerStanza(int p, String nome);
+
+    String getNomeStanzaByArduinoId(String arduinoID);
 }

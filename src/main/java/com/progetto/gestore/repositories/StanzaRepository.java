@@ -12,9 +12,16 @@ public interface StanzaRepository extends JpaRepository<Stanza,Long> {
 
     Stanza getStanzaByNome(String nome);
 
+    @Query ("select s.nome From Stanza s where s.arduinoId = ?1")
+    String getStanzaNomeByArduinoId(String arduinoId);
+
+
+    @Query("select s.contPersone From Stanza s where s.nome = ?1")
+    int getCountByNome(String nome);
+
     @Modifying
     @Query("update Stanza stanza set stanza.temperatura = ?1 where stanza.nome = ?2")
-    void setTemperaturaForNomeStanza(int temp, String nome);
+    void setTemperaturaForNomeStanza(double temp, String nome);
 
     @Modifying
     @Query("update Stanza stanza set stanza.contPersone = ?1 where stanza.nome = ?2")

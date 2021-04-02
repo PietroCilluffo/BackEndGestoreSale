@@ -7,5 +7,8 @@ public class StanzaDto {
     public double temperatura;
     public  int contPersone;
     public int capienzaMax;
+    public String nome;
+
+
 
 }

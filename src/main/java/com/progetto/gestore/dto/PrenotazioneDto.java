@@ -1,7 +1,10 @@
 package com.progetto.gestore.dto;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class PrenotazioneDto {
 
     public String anagrafica;
@@ -11,4 +14,6 @@ public class PrenotazioneDto {
     public Date oraInizio;
     public Date oraFine;
     public String cellulare;
+
+    public StanzaDto stanzaDto = new StanzaDto();
 }
