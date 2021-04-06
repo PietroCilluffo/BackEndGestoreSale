@@ -2,6 +2,8 @@ package com.progetto.gestore.services.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 import javax.mail.*;
@@ -12,7 +14,11 @@ import javax.transaction.Transactional;
 
 import com.progetto.gestore.dto.InfoPrenArduinoDto;
 import com.progetto.gestore.dto.PrenotazioneDto;
+import com.progetto.gestore.repositories.StanzaRepository;
+import org.apache.tomcat.jni.Local;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -25,11 +31,12 @@ import com.progetto.gestore.services.PrenotazioneService;
 @Service
 @Transactional
 public class PrenotazioneServiceImpl implements PrenotazioneService {
-
+	private static final Logger logger = LoggerFactory.getLogger(PrenotazioneServiceImpl.class);
 	@Autowired private PrenotazioneRepository pRepo;
 	@Autowired private ModelMapper modelMapper;
 	@Autowired private Environment env;
 
+	@Autowired private StanzaRepository stanzaRepository;
 	@Override
 	public List<Prenotazione> getAllPrenotazioni() {
 		return pRepo.findAll();
@@ -40,6 +47,9 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 		System.out.println(pr.getStanzaDto().getId());
 		Prenotazione p = modelMapper.map(pr,Prenotazione.class);
+		p.setData(p.getData().plusDays(1));
+		p.setOraInizio(p.getOraInizio().plusHours(1));
+		p.setOraFine((p.getOraFine().plusHours(1)));
 		int len = 10;
 		String charsCaps="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String Chars="abcdefghijklmnopqrstuvwxyz";
@@ -78,14 +88,32 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	}
 
 	@Override
-	public InfoPrenArduinoDto getPrenotazioneAttuale(Date giorno, Date ora, String stanza) {
-		Prenotazione p = pRepo.getPrenotazioneAttualeByStanza(giorno, ora, stanza);
-		InfoPrenArduinoDto pr = modelMapper.map(p,InfoPrenArduinoDto.class);
+	public InfoPrenArduinoDto getPrenotazioneAttuale(LocalDate giorno, LocalTime ora, String stanza) {
+
+
+		Stanza s = stanzaRepository.getStanzaByNome(stanza);
+		logger.info(s.getNome());
+	     List<Prenotazione> p = pRepo.getPrenotazioneByStanzaId(s.getId());
+	     Prenotazione prenotazione = new Prenotazione();
+	     for(Prenotazione pr: p){
+			 logger.info("soadisoaidoasidos------------->");
+			 System.out.println(ora + "  " +pr.getOraInizio());
+			 System.out.println(ora + " " + pr.getOraFine());
+			 System.out.println(pr.getData().equals(giorno));
+	     	if((pr.getData().equals(giorno))&& ora.isAfter(pr.getOraInizio()) && ora.isBefore(pr.getOraFine())){
+	     		prenotazione = pr;
+	     		break;
+			}
+		 }
+
+
+		InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
 		return pr;
 	}
 
 	@Override
-	public InfoPrenArduinoDto getPrenotazioneSuccessiva(Date giorno, Date ora, String stanza) {
+	public InfoPrenArduinoDto getPrenotazioneSuccessiva(LocalDate giorno, LocalTime ora, String stanza) {
+
 		Prenotazione p = pRepo.getPrenotazioniSuccessiveByStanza(giorno, ora, stanza).get(0);
 		InfoPrenArduinoDto pr = modelMapper.map(p,InfoPrenArduinoDto.class);
 		return pr;
@@ -95,13 +123,10 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	public List<PrenotazioneDto> getPrenotazioniBySettimanaStanza(String nome) {
 		List<Prenotazione> settimana = new ArrayList();
 		List<PrenotazioneDto> prenotazioneDtos = new ArrayList<>();
-		Date now = new Date();
+		LocalDate now = LocalDate.now();
 		List<Prenotazione> prenotazioneList = pRepo.getByStanzaGiorno(nome, now);
 		for (int i = 0; i<6 ; i++){
 			Calendar c = Calendar.getInstance();
-			c.setTime(now);
-			c.add(Calendar.DATE, 1);
-			now = c.getTime();
 			List<Prenotazione> prenotazioneListtemp = pRepo.getByStanzaGiorno(nome, now);
 			prenotazioneList.addAll(prenotazioneListtemp);
 		}
@@ -115,7 +140,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	}
 
 	@Override
-	public List<PrenotazioneDto> getPrenotazioniByGiornoStanza(String nome, Date giorno) {
+	public List<PrenotazioneDto> getPrenotazioniByGiornoStanza(String nome, LocalDate giorno) {
 		List<Prenotazione> prenotazioneList = pRepo.getByStanzaGiorno(nome, giorno);
 		List<PrenotazioneDto> prenotazioneDtos = new ArrayList<>();
 		for(Prenotazione p : prenotazioneList){

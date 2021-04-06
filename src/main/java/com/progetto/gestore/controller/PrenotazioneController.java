@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -73,28 +75,32 @@ public class PrenotazioneController {
     @GetMapping(value = "/findPrenotazioniGiornoByStanza", produces = "application/json")
     public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniGiornoByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
-        Date now = new Date();
+        LocalDate now = LocalDate.now();
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniByGiornoStanza(nome,now);
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
     }
 
     //arduino
-    @GetMapping(value = "/findPrenotazioneAttuale", produces = "application/json")
+    @GetMapping(value = "/findPrenotazioneAttuale/{nome}", produces = "application/json")
     public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneAttualeByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
 
 
-        Date dt = new Date();
+        LocalDate dt2 = LocalDate.now();
+        LocalTime attuale= LocalTime.now();
 
-        InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt,dt, nome);
+        logger.info(dt2.toString());
+        logger.info(attuale.toString());
+        InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt2,attuale, nome);
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/findPrenotazioneSuccessiva", produces = "application/json")
     public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneSuccessivaByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
-        Date dt = new Date();
-        InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneSuccessiva(dt,dt, nome);
+        LocalDate dt = LocalDate.now();
+        LocalTime attuale= LocalTime.now();
+        InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneSuccessiva(dt,attuale, nome);
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 }

@@ -1,9 +1,12 @@
 package com.progetto.gestore.enties;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.apache.tomcat.jni.Local;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 
@@ -28,16 +31,13 @@ public class Prenotazione implements Serializable {
     private String descrizione;
 
     @Column ( name = "data")
-    @Temporal(TemporalType.DATE)
-    private Date data;
+    private LocalDate data;
 
     @Column ( name = "oraInizio")
-    @Temporal(TemporalType.TIME)
-    private Date oraInizio;
+    private LocalTime oraInizio;
 
     @Column ( name = "oraFine")
-    @Temporal(TemporalType.TIME)
-    private Date oraFine;
+    private LocalTime oraFine;
 
     @Column(name = "deleteToken")
     private String deleteToken;
@@ -89,27 +89,27 @@ public class Prenotazione implements Serializable {
         this.descrizione = descrizione;
     }
 
-    public Date getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
-    public Date getOraInizio() {
+    public LocalTime getOraInizio() {
         return oraInizio;
     }
 
-    public void setOraInizio(Date oraInizio) {
+    public void setOraInizio(LocalTime oraInizio) {
         this.oraInizio = oraInizio;
     }
 
-    public Date getOraFine() {
+    public LocalTime getOraFine() {
         return oraFine;
     }
 
-    public void setOraFine(Date oraFine) {
+    public void setOraFine(LocalTime oraFine) {
         this.oraFine = oraFine;
     }
 

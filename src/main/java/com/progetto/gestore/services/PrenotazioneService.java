@@ -1,6 +1,8 @@
 package com.progetto.gestore.services;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,13 +24,13 @@ public interface PrenotazioneService {
 
 	PrenotazioneDto getByToken(String token);
 	
-	InfoPrenArduinoDto getPrenotazioneAttuale(Date giorno, Date ora, String stanza);
+	InfoPrenArduinoDto getPrenotazioneAttuale(LocalDate giorno, LocalTime ora, String stanza);
 
-	InfoPrenArduinoDto getPrenotazioneSuccessiva(Date giorno, Date ora, String stanza);
+	InfoPrenArduinoDto getPrenotazioneSuccessiva(LocalDate giorno, LocalTime ora, String stanza);
 	
 	List<PrenotazioneDto> getPrenotazioniBySettimanaStanza(String nome);
 	
-	List<PrenotazioneDto> getPrenotazioniByGiornoStanza(String nome, Date giorno);
+	List<PrenotazioneDto> getPrenotazioniByGiornoStanza(String nome, LocalDate giorno);
 	
 
 }
