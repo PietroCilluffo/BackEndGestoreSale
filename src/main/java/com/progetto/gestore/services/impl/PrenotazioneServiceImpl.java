@@ -160,7 +160,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 			prenotazioneList.addAll(prenotazioneListtemp);
 		}
 		for(Prenotazione p : prenotazioneList){
-			p.setData(p.getData().plusDays(1));
+	
 
 			PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
 			prenotazioneDtos.add(pr);
