@@ -12,6 +12,8 @@ public interface StanzaRepository extends JpaRepository<Stanza,Long> {
 
     Stanza getStanzaByNome(String nome);
 
+    Stanza getStanzaByArduinoId(String arduinoId);
+
     @Query ("select s.nome From Stanza s where s.arduinoId = ?1")
     String getStanzaNomeByArduinoId(String arduinoId);
 

@@ -65,14 +65,14 @@ public class PrenotazioneController {
         return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/findPrenotazioniSettimanaByStanza", produces = "application/json")
+    @GetMapping(value = "/findPrenotazioniSettimanaByStanza/{nome}", produces = "application/json")
     public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniSettimanaByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniBySettimanaStanza(nome);
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/findPrenotazioniGiornoByStanza", produces = "application/json")
+    @GetMapping(value = "/findPrenotazioniGiornoByStanza/{nome}", produces = "application/json")
     public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniGiornoByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         LocalDate now = LocalDate.now();
@@ -95,7 +95,7 @@ public class PrenotazioneController {
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/findPrenotazioneSuccessiva", produces = "application/json")
+    @GetMapping(value = "/findPrenotazioneSuccessiva/{nome}", produces = "application/json")
     public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneSuccessivaByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         LocalDate dt = LocalDate.now();

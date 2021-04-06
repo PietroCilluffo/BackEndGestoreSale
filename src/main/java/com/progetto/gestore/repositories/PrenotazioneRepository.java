@@ -27,7 +27,7 @@ public interface PrenotazioneRepository extends JpaRepository<Prenotazione,Integ
     @Query("DELETE FROM Prenotazione p WHERE p.deleteToken =?1")
     public void delByToken(String token);
 
-    @Query("SELECT p FROM Prenotazione p, Stanza s WHERE p.stanza.id = s.id AND s.nome =?1 AND p.data = ?2")
+    @Query("SELECT p FROM Prenotazione p, Stanza s WHERE p.stanza.id = s.id AND s.arduinoId =?1 AND p.data = ?2")
     public List<Prenotazione> getByStanzaGiorno(String nome, LocalDate giorno);
 
 

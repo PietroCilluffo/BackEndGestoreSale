@@ -9,5 +9,6 @@ public class StanzaDto {
     public  int contPersone;
     public int capienzaMax;
     public String nome;
+    public String arduinoId;
 
 }
