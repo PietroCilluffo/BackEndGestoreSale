@@ -33,7 +33,7 @@ public class StanzaController {
         try
         {
 
-            logger.info("rsjdsaojkdosa");
+
             String nomeStanza = stanzaService.getNomeStanzaByArduinoId(dto.getArduinoID());
            stanzaService.setTemperaturaPerStanza(dto.getTemp(),nomeStanza);
         }
@@ -53,7 +53,6 @@ public class StanzaController {
         List<StanzaDto> stanze = new ArrayList<StanzaDto>();
         try
         {
-            logger.info("jfsakkdsakdsa");
             stanze = stanzaService.getAllStanze();
         }
         catch(Exception e)

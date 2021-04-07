@@ -45,17 +45,14 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	@Override
 	public boolean AggiungiPrenotazione(PrenotazioneDto pr) throws AddressException, MessagingException, IOException {
 
-		//System.out.println(pr.getStanzaDto().getId());
-		Prenotazione p = modelMapper.map(pr,Prenotazione.class);
-		System.out.println("ora inizio" + p.getOraInizio());
-		System.out.println("data" + p.getData());
 
-        System.out.println(LocalDate.now());
+		Prenotazione p = modelMapper.map(pr,Prenotazione.class);
+
         List<Prenotazione> prenotazioneList = pRepo.getPrenotazioneByStanzaId(pr.getStanzaDto().getId());
         for (Prenotazione prenotazione: prenotazioneList){
         	if(pr.getData().equals(prenotazione.getData())){
 				if(pr.getOraInizio().equals(prenotazione.getOraInizio())){
-					System.out.println("DEBUUUUUUUUUUUG ----------->");
+
 					return false;
 				}
 				if(pr.getOraInizio().isAfter(prenotazione.getOraInizio())&& pr.getOraInizio().isBefore(prenotazione.getOraInizio())){
@@ -68,9 +65,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 			}
 
 		}
-		//p.setData(p.getData().plusDays(1));
-	    //p.setOraInizio(p.getOraInizio().plusHours(1));
-		//p.setOraFine((p.getOraFine().plusHours(1)));
+
 		int len = 10;
 		String charsCaps="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String Chars="abcdefghijklmnopqrstuvwxyz";
@@ -130,10 +125,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	     List<Prenotazione> p = pRepo.getPrenotazioneByStanzaId(s.getId());
 
 	     for(Prenotazione pr: p){
-			 logger.info("soadisoaidoasidos------------->");
-			 System.out.println(ora + "  " +pr.getOraInizio() + ora.isAfter(pr.getOraInizio()) );
-			 System.out.println(ora + " " + pr.getOraFine() + ora.isBefore(pr.getOraFine()));
-			 System.out.println(pr.getData().equals(giorno));
+
 	     	if((pr.getData().equals(giorno))&& ora.isAfter(pr.getOraInizio()) && ora.isBefore(pr.getOraFine())){
 
 	     		prenotazione = pr;
@@ -143,13 +135,15 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 
 		InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
-		String crop = pr.getDescrizione();
-		crop = crop.substring(0,Math.min(crop.length(),48));
-		if(crop.length() > 47){
-			crop = crop + "..";
-		}
+	     if(prenotazione == null) {
+			 String crop = pr.getDescrizione();
+			 crop = crop.substring(0, Math.min(crop.length(), 48));
+			 if (crop.length() > 47) {
+				 crop = crop + "..";
+			 }
 
-		pr.setDescrizione(crop);
+			 pr.setDescrizione(crop);
+		 }
 		return pr;
 	}
 
@@ -170,9 +164,8 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		List <Prenotazione> temp = new ArrayList<>();
 
 		for(Prenotazione pr: p){
-			logger.info("soadisoaidoasidos------------->");
-			System.out.println(ora + "  " +pr.getOraInizio());
-					System.out.println(pr.getData() + " " + giorno);
+
+
 			if((pr.getData().equals(giorno)) && ora.isBefore(pr.getOraInizio())){
 				temp.add(pr);
 			}
@@ -192,7 +185,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
 		String crop = pr.getDescrizione();
 		crop = crop.substring(0,Math.min(crop.length(),48));
-		System.out.println("lunghezza -----------<"+ crop.length());
+
 		if(crop.length() > 47){
 			crop = crop + "..";
 		}
@@ -207,7 +200,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		LocalDate now = LocalDate.now();
 
 		List<Prenotazione> prenotazioneList = pRepo.getByStanzaGiorno(nome, now);
-		System.out.println("hjdskajdklpaskjd");
+
 		for (int i = 0; i<6 ; i++){
 			now = now.plusDays(1);
 			List<Prenotazione> prenotazioneListtemp = pRepo.getByStanzaGiorno(nome, now);
@@ -231,8 +224,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		List<PrenotazioneDto> prenotazioneDtos = new ArrayList<>();
 
 		for(Prenotazione p : prenotazioneList){
-			//p.setOraInizio(p.getOraInizio().minusHours(1));
-			//p.setOraFine(p.getOraFine().minusHours(1));
+
 
 			PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
 			prenotazioneDtos.add(pr);

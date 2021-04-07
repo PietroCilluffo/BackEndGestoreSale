@@ -124,7 +124,7 @@ public class PrenotazioneController {
         logger.info(dt2.toString());
         logger.info(attuale.toString());
         InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt2,attuale, nome);
-        if(dto == null){
+        if(dto.getOraFine() == null){
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode responseNode = mapper.createObjectNode();
             responseNode.put("code", HttpStatus.OK.toString());
