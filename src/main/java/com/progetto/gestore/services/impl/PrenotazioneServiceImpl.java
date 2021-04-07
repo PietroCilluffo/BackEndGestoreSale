@@ -43,7 +43,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	}
 
 	@Override
-	public void AggiungiPrenotazione(PrenotazioneDto pr) throws AddressException, MessagingException, IOException {
+	public boolean AggiungiPrenotazione(PrenotazioneDto pr) throws AddressException, MessagingException, IOException {
 
 		//System.out.println(pr.getStanzaDto().getId());
 		Prenotazione p = modelMapper.map(pr,Prenotazione.class);
@@ -51,7 +51,23 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		System.out.println("data" + p.getData());
 
         System.out.println(LocalDate.now());
+        List<Prenotazione> prenotazioneList = pRepo.getPrenotazioneByStanzaId(pr.getStanzaDto().getId());
+        for (Prenotazione prenotazione: prenotazioneList){
+        	if(pr.getData().equals(prenotazione.getData())){
+				if(pr.getOraInizio().equals(prenotazione.getOraInizio())){
+					System.out.println("DEBUUUUUUUUUUUG ----------->");
+					return false;
+				}
+				if(pr.getOraInizio().isAfter(prenotazione.getOraInizio())&& pr.getOraInizio().isBefore(prenotazione.getOraInizio())){
+					return false;
+				}
 
+				if(pr.getOraFine().isAfter(prenotazione.getOraInizio())&& pr.getOraFine().isBefore(prenotazione.getOraFine())){
+					return false;
+				}
+			}
+
+		}
 		//p.setData(p.getData().plusDays(1));
 	    //p.setOraInizio(p.getOraInizio().plusHours(1));
 		//p.setOraFine((p.getOraFine().plusHours(1)));
@@ -75,6 +91,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		p.setDeleteToken(stringToken);
 		pRepo.save(p);
 		sendmail(p.getEmail(),p.getDeleteToken());
+		return  true;
 
 	}
 
@@ -87,7 +104,11 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	@Override
 	public PrenotazioneDto getByToken(String token) {
 		Prenotazione p = pRepo.getByToken(token);
-
+        if(p == null){
+        	Prenotazione p1 = new Prenotazione();
+			PrenotazioneDto pr = modelMapper.map(p1, PrenotazioneDto.class);
+			return pr;
+		}
 		PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
 		return pr;
 	}
@@ -96,10 +117,18 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	public InfoPrenArduinoDto getPrenotazioneAttuale(LocalDate giorno, LocalTime ora, String arduinoId) {
 
 
+
 		Stanza s = stanzaRepository.getStanzaByArduinoId(arduinoId);
-		logger.info(s.getNome());
+		Prenotazione prenotazione = new Prenotazione();
+
+		if(s == null){
+			InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+			return pr;
+		}
+
+
 	     List<Prenotazione> p = pRepo.getPrenotazioneByStanzaId(s.getId());
-	     Prenotazione prenotazione = new Prenotazione();
+
 	     for(Prenotazione pr: p){
 			 logger.info("soadisoaidoasidos------------->");
 			 System.out.println(ora + "  " +pr.getOraInizio() + ora.isAfter(pr.getOraInizio()) );
@@ -114,6 +143,13 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 
 		InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+		String crop = pr.getDescrizione();
+		crop = crop.substring(0,Math.min(crop.length(),48));
+		if(crop.length() > 47){
+			crop = crop + "..";
+		}
+
+		pr.setDescrizione(crop);
 		return pr;
 	}
 
@@ -121,10 +157,18 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	public InfoPrenArduinoDto getPrenotazioneSuccessiva(LocalDate giorno, LocalTime ora, String arduinoId) {
 
 		Stanza s = stanzaRepository.getStanzaByArduinoId(arduinoId);
-		logger.info(s.getNome());
-		List<Prenotazione> p = pRepo.getPrenotazioneByStanzaId(s.getId());
-		List <Prenotazione> temp = new ArrayList<>();
 		Prenotazione prenotazione = new Prenotazione();
+		if(s == null){
+			InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+			return pr;
+		}
+		List<Prenotazione> p = pRepo.getPrenotazioneByStanzaId(s.getId());
+		if(p.isEmpty()){
+			InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+			return pr;
+		}
+		List <Prenotazione> temp = new ArrayList<>();
+
 		for(Prenotazione pr: p){
 			logger.info("soadisoaidoasidos------------->");
 			System.out.println(ora + "  " +pr.getOraInizio());
@@ -132,6 +176,10 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 			if((pr.getData().equals(giorno)) && ora.isBefore(pr.getOraInizio())){
 				temp.add(pr);
 			}
+		}
+		if(temp.isEmpty()){
+			InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+			return pr;
 		}
 		prenotazione = temp.get(0);
 		for (Prenotazione pr : temp){
@@ -142,6 +190,13 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 		}
 
 		InfoPrenArduinoDto pr = modelMapper.map(prenotazione,InfoPrenArduinoDto.class);
+		String crop = pr.getDescrizione();
+		crop = crop.substring(0,Math.min(crop.length(),48));
+		System.out.println("lunghezza -----------<"+ crop.length());
+		if(crop.length() > 47){
+			crop = crop + "..";
+		}
+		pr.setDescrizione(crop);
 		return pr;
 	}
 
@@ -160,7 +215,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 			prenotazioneList.addAll(prenotazioneListtemp);
 		}
 		for(Prenotazione p : prenotazioneList){
-	
+
 
 			PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
 			prenotazioneDtos.add(pr);
@@ -189,6 +244,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 	private void sendmail(String mail, String token) throws AddressException, MessagingException, IOException{
 
 		String ip = env.getProperty("sede.ip");
+		String ipFrontEnd = env.getProperty("sede.frontendIp");
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
@@ -205,7 +261,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
 		msg.setSubject("Prenotazione Stanza");
-		msg.setContent("http://frontendIp:porta/annullamento/" + token, "text/html");
+		msg.setContent("http://"+ipFrontEnd+ "/prenotazione/deleteByToken/" + token, "text/html");
 		msg.setSentDate(new Date());
 
 

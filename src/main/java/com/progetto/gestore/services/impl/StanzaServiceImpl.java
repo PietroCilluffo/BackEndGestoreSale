@@ -36,13 +36,20 @@ public class StanzaServiceImpl implements StanzaService {
 
     @Override
     public void setTemperaturaPerStanza(double temp, String nome) {
+
         stanzaRepository.setTemperaturaForNomeStanza(temp,nome);
     }
 
     @Override
     public void setContPerStanza(int p,String nome) {
+
         int count = stanzaRepository.getCountByNome(nome) + p;
-        stanzaRepository.setTContForNomeStanza(count,nome);
+        if(count <0 ){
+
+        }else{
+            stanzaRepository.setTContForNomeStanza(count,nome);
+        }
+
     }
     @Override
     public String getNomeStanzaByArduinoId(String arduinoId){

@@ -50,39 +50,71 @@ public class PrenotazioneController {
 
 
         System.out.println(dto);
+        boolean b = true;
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode responseNode = mapper.createObjectNode();
         try{
-            prenotazioneService.AggiungiPrenotazione(dto);
+           b = prenotazioneService.AggiungiPrenotazione(dto);
+
         }catch(Exception e) {
             System.out.println(e);
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode responseNode = mapper.createObjectNode();
+        if(b == true){
+            responseNode.put("code", HttpStatus.OK.toString());
+            responseNode.put("message", String.format("Inserimento prenotazione Eseguito Con Successo"));
 
-        responseNode.put("code", HttpStatus.OK.toString());
-        responseNode.put("message", String.format("Inserimento prenotazione Eseguito Con Successo"));
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.CREATED);
+        }else{
+            responseNode.put("code", HttpStatus.CONFLICT.toString());
+            responseNode.put("message", String.format("La prenotazione inserita coincide con uno slot già occupato"));
 
-        return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.CREATED);
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.CONFLICT);
+        }
+
     }
 
     @GetMapping(value = "/findPrenotazioniSettimanaByStanza/{nome}", produces = "application/json")
-    public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniSettimanaByStanza(@PathVariable("nome")String nome){
+    public ResponseEntity<?> findPrenotazioniSettimanaByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniBySettimanaStanza(nome);
+        if(list.isEmpty()){
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode responseNode = mapper.createObjectNode();
+            responseNode.put("code", HttpStatus.OK.toString());
+            responseNode.put("message", String.format("Nessuna prenotazione trovata"));
+
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
     }
 
     @GetMapping(value = "/findPrenotazioniGiornoByStanza/{nome}", produces = "application/json")
-    public ResponseEntity<List<PrenotazioneDto>> findPrenotazioniGiornoByStanza(@PathVariable("nome")String nome){
+    public ResponseEntity<?> findPrenotazioniGiornoByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         LocalDate now = LocalDate.now();
         List<PrenotazioneDto> list = prenotazioneService.getPrenotazioniByGiornoStanza(nome,now);
+        if(list.isEmpty()){
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode responseNode = mapper.createObjectNode();
+            responseNode.put("code", HttpStatus.OK.toString());
+            responseNode.put("message", String.format("Nessuna prenotazione trovata"));
+
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<List<PrenotazioneDto>>(list, HttpStatus.OK);
+    }
+    @GetMapping(value = "/findPrenotazioneByToken/{nome}", produces = "application/json")
+    public ResponseEntity<PrenotazioneDto> findPrenotazioneByToken(@PathVariable("nome")String nome){
+        logger.info("***** Find " + " ******");
+        LocalDate now = LocalDate.now();
+        PrenotazioneDto dto = prenotazioneService.getByToken(nome);
+        return new ResponseEntity<PrenotazioneDto>(dto, HttpStatus.OK);
     }
 
     //arduino
     @GetMapping(value = "/findPrenotazioneAttuale/{nome}", produces = "application/json")
-    public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneAttualeByStanza(@PathVariable("nome")String nome){
+    public ResponseEntity<?> findPrenotazioneAttualeByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
 
 
@@ -92,15 +124,33 @@ public class PrenotazioneController {
         logger.info(dt2.toString());
         logger.info(attuale.toString());
         InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneAttuale(dt2,attuale, nome);
+        if(dto == null){
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode responseNode = mapper.createObjectNode();
+            responseNode.put("code", HttpStatus.OK.toString());
+            responseNode.put("message", String.format("Nessuna prenotazione trovata"));
+
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 
     @GetMapping(value = "/findPrenotazioneSuccessiva/{nome}", produces = "application/json")
-    public ResponseEntity<InfoPrenArduinoDto> findPrenotazioneSuccessivaByStanza(@PathVariable("nome")String nome){
+    public ResponseEntity<?> findPrenotazioneSuccessivaByStanza(@PathVariable("nome")String nome){
         logger.info("***** Find " + " ******");
         LocalDate dt = LocalDate.now();
         LocalTime attuale= LocalTime.now();
         InfoPrenArduinoDto dto = prenotazioneService.getPrenotazioneSuccessiva(dt,attuale, nome);
+        if(dto.getOraFine() == null){
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode responseNode = mapper.createObjectNode();
+            responseNode.put("code", HttpStatus.NOT_FOUND.toString());
+            responseNode.put("message", String.format("Nessuna prenotazione trovata in giornata odierna"));
+
+            return new ResponseEntity<>(responseNode, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+
         return new ResponseEntity<InfoPrenArduinoDto>(dto, HttpStatus.OK);
     }
 }

@@ -18,7 +18,7 @@ public interface PrenotazioneService {
 	
 	List<Prenotazione> getAllPrenotazioni();
 	
-	void AggiungiPrenotazione(PrenotazioneDto p)  throws AddressException, MessagingException, IOException;
+	boolean AggiungiPrenotazione(PrenotazioneDto p)  throws AddressException, MessagingException, IOException;
 	
 	void DelByToken(String token);
 
