@@ -16,4 +16,6 @@ public interface StanzaService {
     void setContPerStanza(int p, String nome);
 
     String getNomeStanzaByArduinoId(String arduinoID);
+
+    StanzaDto getStanzaByArduinoId(String arduinoID);
 }

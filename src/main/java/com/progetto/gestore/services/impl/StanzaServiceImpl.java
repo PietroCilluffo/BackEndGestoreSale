@@ -55,4 +55,11 @@ public class StanzaServiceImpl implements StanzaService {
     public String getNomeStanzaByArduinoId(String arduinoId){
         return stanzaRepository.getStanzaNomeByArduinoId(arduinoId);
     }
+
+    @Override
+    public StanzaDto getStanzaByArduinoId(String arduinoID) {
+        Stanza s = stanzaRepository.getStanzaByArduinoId(arduinoID);
+        StanzaDto dto = modelMapper.map(s,StanzaDto.class);
+        return dto;
+    }
 }

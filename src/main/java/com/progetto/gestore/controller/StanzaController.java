@@ -62,8 +62,14 @@ public class StanzaController {
 
         return ResponseEntity.ok(stanze);
     }
+    @GetMapping(value = "/findStanzaByArduinoId/{nome}", produces = "application/json")
+    public ResponseEntity<?> findPrenotazioneAttualeByStanza(@PathVariable("nome")String nome) {
+
+            StanzaDto dto = stanzaService.getStanzaByArduinoId(nome);
 
 
+        return ResponseEntity.ok(dto);
+    }
 
 
     @PostMapping("/counter")
