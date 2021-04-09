@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import javax.mail.*;
@@ -227,6 +228,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 
 			PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
+			
 			prenotazioneDtos.add(pr);
 		}
 		return prenotazioneDtos;
