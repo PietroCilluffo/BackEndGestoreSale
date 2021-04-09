@@ -228,7 +228,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 
 			PrenotazioneDto pr = modelMapper.map(p, PrenotazioneDto.class);
-			
+
 			prenotazioneDtos.add(pr);
 		}
 		return prenotazioneDtos;
@@ -255,7 +255,7 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
 		msg.setSubject("Prenotazione Stanza");
-		msg.setContent("http://"+ipFrontEnd+ "/prenotazione/deleteByToken/" + token, "text/html");
+		msg.setContent("http://"+ipFrontEnd+ "/deleteReservation/" + token, "text/html");
 		msg.setSentDate(new Date());
 
 
